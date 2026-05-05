@@ -461,9 +461,44 @@ footer {
 .d1 { transition-delay:.12s; } .d2 { transition-delay:.22s; } .d3 { transition-delay:.32s; }
 
 /* ── RESPONSIVE ── */
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center;
+  gap: 5px; cursor: pointer; padding: 8px;
+  background: none; border: none; z-index: 101;
+}
+.hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--bleu-nuit); border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
 @media (max-width:960px) {
   nav { padding:0 20px; }
-  .nav-links li:not(:last-child) { display:none; }
+  .nav-links { display:none; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: fixed; top:72px; left:0; right:0;
+    background: rgba(255,255,255,0.99);
+    border-bottom: 2px solid var(--terracotta);
+    padding: 16px 24px 24px;
+    gap: 0; z-index: 99;
+    box-shadow: 0 8px 32px rgba(28,43,58,0.12);
+  }
+  .nav-links.open li { border-bottom: 1px solid rgba(212,149,106,0.15); }
+  .nav-links.open li:last-child { border-bottom: none; margin-top: 12px; }
+  .nav-links.open a {
+    display: block; padding: 14px 0;
+    font-size: 15px; letter-spacing: 0.08em;
+  }
+  .nav-links.open .nav-cta {
+    display: block; text-align: center;
+    padding: 14px 24px; margin-top: 4px;
+  }
+  .hamburger { display: flex; }
   #accueil, #qui-suis-je, .section-avec-photo { grid-template-columns:1fr; }
   .hero-g { padding:60px 32px 60px 44px; }
   .hero-g::before { left:12px; }
@@ -477,7 +512,14 @@ footer {
   .biblio-kpis { flex-direction:column; }
   section { padding:60px 24px; }
   footer { padding:22px 24px; flex-direction:column; text-align:center; }
-  #contact { padding:64px 24px; }
+  #contact { padding:56px 20px; }
+  .contact-titre { font-size: 28px; }
+  .contact-sous { font-size: 14px; }
+  .contact-btns { flex-direction: column; align-items: center; }
+  .btn-blanc, .btn-oterra { width: 100%; text-align: center; padding: 16px 20px; }
+  .contact-infos { flex-direction: column; align-items: center; gap: 16px; }
+  .ci { font-size: 14px; }
+  .ci button { margin-top: 6px; }
   .qui-col-photo { flex-direction:row; gap:24px; align-items:center; }
 }
 </style>
@@ -496,6 +538,9 @@ footer {
     <li><a href="#formation">Formation</a></li>
     <li><a href="#contact" class="nav-cta">Me contacter</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -757,6 +802,20 @@ const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+function toggleMenu() {
+  const nav = document.querySelector('.nav-links');
+  const btn = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+// Fermer le menu quand on clique sur un lien
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+  });
+});
 </script>
 </body>
 </html>
